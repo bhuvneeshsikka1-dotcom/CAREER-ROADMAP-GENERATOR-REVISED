@@ -43,6 +43,10 @@ st.sidebar.title("User Inputs")
 #================API KEYS================
 GOOGLE_API_KEY = st.sidebar.text_input("Enter Google API Key", type="password")
 SERPER_API_KEY = st.sidebar.text_input("Enter Serper API Key",type="password")
+#================USER DETAILS================
+
+name = st.sidebar.text_input("Full Name")
+email = st.sidebar.text_input("Email Address")
 
 #================CURRENT EDUCATION================
 
@@ -105,11 +109,14 @@ def save_prompt(prompt):
         f.write(prompt)
     return "Prompt Saved Successfully!!"
 
-def get_user_details(education, target_role, experience, skills, user_prompt):
+def get_user_details(name, email, education, target_role, experience, skills, user_prompt):
     """This function helps to organize
     user information."""
 
-    details = f""" Current Education : {education}
+    details = f""" 
+    Full Name: {name}
+    Email Address: {email}
+    Current Education : {education}
     Target Role : {target_role}
     Experience : {experience}
     Current Skills : {skills}
@@ -169,7 +176,7 @@ def search_learning_resources(query):
 
 #================MAIN AGENT================
 
-def main_agent(agent, education, target_role, experience, current_skills,
+def main_agent(agent, name, email, education, target_role, experience, current_skills,
                user_prompt):
   """This is the Main Agent.
   It takes user information and generates a complete
@@ -179,6 +186,26 @@ def main_agent(agent, education, target_role, experience, current_skills,
 
 Your task is to generate a complete Career Roadmap based on the user's education,
 experience, current skills, target career, and additional requirements.
+
+The generated Career Roadmap must be personalized for the user.
+
+At the beginning of the HTML page, create a professional header containing:
+
+• Career Roadmap Report
+
+• Prepared For: <User's Full Name>
+
+• Email Address: <User's Email>
+
+• Current Education
+
+• Target Role
+
+• Experience Level
+
+• Date of Generation
+
+Display this information in a modern, professional card before the roadmap starts.
 
 The roadmap must include:
 
@@ -430,7 +457,7 @@ Return ONLY valid HTML.
 
 Do not include explanations before or after the HTML.
 """
-  user_details = get_user_details(education, target_role, experience, current_skills, user_prompt)
+  user_details = get_user_details(name, email, education, target_role, experience, current_skills, user_prompt)
   final_prompt = prompt + user_details
   save_prompt(final_prompt)
   response = agent.invoke({"messages":[{"role":"user", "content":final_prompt}]})
@@ -464,7 +491,7 @@ if generate:
 
     with st.spinner("Generating Your Career Roadmap..."):
 
-        career_code = main_agent(agent,education,target_role,
+        career_code = main_agent(agent,name,email,education,target_role,
             experience,current_skills,user_prompt)
 
         st.html(career_code,width="stretch")
