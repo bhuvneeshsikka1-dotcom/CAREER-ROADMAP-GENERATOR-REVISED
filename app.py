@@ -14,7 +14,7 @@ st.set_page_config(page_title="Career Roadmap Generator", page_icon="🚀",
 
 st.title("🚀 Career Roadmap Generator")
 st.markdown("### Build Your Personalized Career Roadmap Using Generative AI")
-st.image("https://raw.githubusercontent.com/bhuvneeshsikka1-dotcom/CAREER-ROADMAP-GENERATOR/refs/heads/main/bg.png",
+st.image("https://raw.githubusercontent.com/bhuvneeshsikka1-dotcom/CAREER-ROADMAP-GENERATOR-REVISED/refs/heads/main/bg.png",
          use_container_width=True)
 #================USER PROMPT================
 
