@@ -159,6 +159,9 @@ Final Motivation
 """
 
 def search_learning_resources(query):
+    """Search Google using the Serper API and return
+    the latest official certification courses and
+    YouTube learning resources for the given query."""
 
     url = "https://google.serper.dev/search"
 
