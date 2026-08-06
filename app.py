@@ -4,6 +4,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import create_agent
 import streamlit as st
 import os
+import requests
 
 #================STREAMLIT PAGE CONFIG================
 
@@ -41,6 +42,7 @@ generate = st.button("🚀 Generate Career Roadmap",use_container_width=True)
 st.sidebar.title("User Inputs")
 #================API KEYS================
 GOOGLE_API_KEY = st.sidebar.text_input("Enter Google API Key", type="password")
+SERPER_API_KEY = st.sidebar.text_input("Enter Serper API Key",type="password")
 
 #================CURRENT EDUCATION================
 
@@ -118,7 +120,7 @@ def get_user_details(education, target_role, experience, skills, user_prompt):
 def roadmap_template():
     """This function returns roadmap format."""
     return """
-Introduction
+Career Overview
 
 Skill Gap Analysis
 
@@ -126,7 +128,9 @@ Learning Roadmap
 
 Projects
 
-Certifications
+Recommended Certifications & Learning Resources
+
+Recommended YouTube Videos
 
 Resume Building
 
@@ -140,10 +144,28 @@ Interview Preparation
 
 Expected Salary
 
-Companies
+Top Hiring Companies
 
 Timeline
+
+Final Motivation
 """
+
+def search_learning_resources(query):
+
+    url = "https://google.serper.dev/search"
+
+    payload = {"q": query}
+
+    headers = {
+        "X-API-KEY": SERPER_API_KEY,
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(url,json=payload,
+        headers=headers)
+
+    return response.json()
 
 #================MAIN AGENT================
 
@@ -174,7 +196,9 @@ The roadmap must include:
 
 • Advanced Projects
 
-• Recommended Certifications
+• Recommended Certifications & Learning Resources
+
+• Recommended YouTube Videos
 
 • Resume Building
 
@@ -185,6 +209,10 @@ The roadmap must include:
 • GitHub Suggestions
 
 • Interview Preparation
+
+• Expected Salary
+
+• Top Hiring Companies
 
 • Timeline
 
@@ -232,11 +260,105 @@ If the user has requested:
 
 Modify the roadmap accordingly.
 
-Always personalize the roadmap.
+==================================================
+RECOMMENDED CERTIFICATIONS & LEARNING RESOURCES
+==================================================
 
-=========================
+Use the Search Tool to retrieve the latest learning resources.
+
+For every certification provide:
+
+• Certification Name
+
+• Official Provider
+
+• Official Course Link
+
+• Duration
+
+• Free or Paid
+
+• Difficulty Level
+
+• Why it is recommended
+
+Recommend only official providers such as:
+
+• Google
+
+• Microsoft Learn
+
+• AWS
+
+• Coursera
+
+• DeepLearning.AI
+
+• IBM
+
+• NVIDIA
+
+• Hugging Face
+
+• Databricks
+
+• edX
+
+• Udemy
+
+• Cisco
+
+• Oracle
+
+Do not generate fake or imaginary links.
+
+Always provide official URLs whenever available.
+
+==================================================
+RECOMMENDED YOUTUBE VIDEOS
+==================================================
+
+Use the Search Tool to retrieve the latest high-quality YouTube tutorials.
+
+Recommend 5 YouTube videos.
+
+For every video provide:
+
+• Video Title
+
+• Channel Name
+
+• Direct YouTube Link
+
+• Approximate Duration (if available)
+
+• Why this video is recommended
+
+Prefer trusted channels such as:
+
+• freeCodeCamp.org
+
+• DeepLearningAI
+
+• Krish Naik
+
+• CampusX
+
+• CodeBasics
+
+• Sentdex
+
+• Google Developers
+
+• Microsoft Developer
+
+• Hugging Face
+
+Do not generate fake YouTube links.
+
+==================================================
 DESIGN GUIDELINES
-=========================
+==================================================
 
 • Create a premium and modern UI.
 
@@ -254,14 +376,22 @@ DESIGN GUIDELINES
 
 • Use a light overall page background.
 
-• Use professional colors such as:
+• Use professional colors:
+
   - Primary: #2563EB
+
   - Secondary: #1E293B
+
   - Accent: #10B981
+
   - Background: #F8FAFC
+
   - Cards: #FFFFFF
+
   - Heading Text: #0F172A
+
   - Body Text: #334155
+
   - Border: #CBD5E1
 
 • Use soft shadows.
@@ -272,13 +402,27 @@ DESIGN GUIDELINES
 
 • Make every section visually separated.
 
-• Ensure the generated HTML looks professional on desktop and mobile devices.
+• Ensure the generated HTML looks professional on desktop and mobile.
 
 • Do not use neon colors.
 
 • Avoid gradients that reduce text visibility.
 
 • Prioritize readability over decoration.
+
+==================================================
+IMPORTANT INSTRUCTIONS
+==================================================
+
+• Always personalize the roadmap.
+
+• Keep the roadmap practical and industry-oriented.
+
+• Recommend technologies in the correct learning order.
+
+• Keep project ideas relevant to the selected target role.
+
+• If search results are unavailable, clearly mention that live resources could not be retrieved instead of generating fake links.
 
 Generate everything in one HTML file.
 
@@ -296,8 +440,12 @@ Do not include explanations before or after the HTML.
     #================GENERATE CAREER ROADMAP================
 
 if generate:
-    if GOOGLE_API_KEY == "":
+    if not GOOGLE_API_KEY:
         st.warning("Please Enter Google API Key.")
+        st.stop()
+
+    if not SERPER_API_KEY:
+        st.warning("Please Enter Serper API Key.")
         st.stop()
 
     if user_prompt.strip() == "":
@@ -311,7 +459,7 @@ if generate:
     
     agent = create_agent(
             model=model,
-            tools=[save_prompt,get_user_details,roadmap_template])
+            tools=[save_prompt,get_user_details,roadmap_template,search_learning_resources])
     
 
     with st.spinner("Generating Your Career Roadmap..."):
