@@ -5,7 +5,6 @@ from langchain.agents import create_agent
 import streamlit as st
 import os
 import requests
-from weasyprint import HTML
 
 #================STREAMLIT PAGE CONFIG================
 
@@ -177,15 +176,6 @@ def search_learning_resources(query):
         headers=headers)
 
     return response.json()
-
-#================PDF GENERATOR================
-
-def generate_pdf(html_code):
-    """This function converts HTML roadmap into PDF."""
-
-    pdf_file = HTML(string=html_code).write_pdf()
-
-    return pdf_file
 
 #================MAIN AGENT================
 
@@ -516,13 +506,8 @@ if generate:
         )
     
         st.html(career_code, width="stretch")
-    
-        pdf_file = generate_pdf(career_code)
-    
-        st.download_button(
-            label="📥 Download Career Roadmap as PDF",
-            data=pdf_file,
-            file_name="Career_Roadmap.pdf",
-            mime="application/pdf",
-            use_container_width=True
-        )
+                data=pdf_file,
+                file_name="Career_Roadmap.pdf",
+                mime="application/pdf",
+                use_container_width=True
+            )
