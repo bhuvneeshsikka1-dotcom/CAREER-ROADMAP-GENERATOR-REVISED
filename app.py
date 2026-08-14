@@ -494,15 +494,15 @@ if generate:
 
    with st.spinner("Generating Your Career Roadmap..."):
 
-    career_code = main_agent(
-        agent,
-        name,
-        email,
-        education,
-        target_role,
-        experience,
-        current_skills,
-        user_prompt
-    )
-
-    st.html(career_code, width="stretch")
+        career_code = main_agent(
+            agent,
+            name,
+            email,
+            education,
+            target_role,
+            experience,
+            current_skills,
+            user_prompt
+        )
+    
+        st.html(career_code, width="stretch")
