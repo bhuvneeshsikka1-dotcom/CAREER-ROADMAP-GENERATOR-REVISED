@@ -492,22 +492,17 @@ if generate:
             tools=[save_prompt,get_user_details,roadmap_template,search_learning_resources])
     
 
-    with st.spinner("Generating Your Career Roadmap..."):
+   with st.spinner("Generating Your Career Roadmap..."):
 
-        career_code = main_agent(
-            agent,
-            name,
-            email,
-            education,
-            target_role,
-            experience,
-            current_skills,
-            user_prompt
-        )
-    
-        st.html(career_code, width="stretch")
-                data=pdf_file,
-                file_name="Career_Roadmap.pdf",
-                mime="application/pdf",
-                use_container_width=True
-            )
+    career_code = main_agent(
+        agent,
+        name,
+        email,
+        education,
+        target_role,
+        experience,
+        current_skills,
+        user_prompt
+    )
+
+    st.html(career_code, width="stretch")
